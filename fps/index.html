@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
+  <head>
+    <meta charset="UTF-8" />
     <title>Chart of frames/second with d3.js</title>
 
     <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js">
@@ -20,22 +20,22 @@
       }
     </style>
 
-		<script>	
-			// Code for the window.requestAnimFrame developed by Paul Irish <paul.irish at gmail dot com>
-			// Based on this W3C spec (still a draft) http://webstuff.nfshost.com/anim-timing/Overview.html
-			// shim layer with setTimeout fallback
-		    window.requestAnimFrame = (function() {
-		      return  window.requestAnimationFrame       || 
-		              window.webkitRequestAnimationFrame || 
-		              window.mozRequestAnimationFrame    || 
-		              window.oRequestAnimationFrame      || 
-		              window.msRequestAnimationFrame     || 
-		              function(/* function */ callback, /* DOMElement */ element) {
-		              	window.setTimeout(callback, 1000 / 60);
-		              };
-		    })();
+    <script>  
+      // Code for the window.requestAnimFrame developed by Paul Irish <paul.irish at gmail dot com>
+      // Based on this W3C spec (still a draft) http://webstuff.nfshost.com/anim-timing/Overview.html
+      // shim layer with setTimeout fallback
+        window.requestAnimFrame = (function() {
+          return  window.requestAnimationFrame       || 
+                  window.webkitRequestAnimationFrame || 
+                  window.mozRequestAnimationFrame    || 
+                  window.oRequestAnimationFrame      || 
+                  window.msRequestAnimationFrame     || 
+                  function(/* function */ callback, /* DOMElement */ element) {
+                    window.setTimeout(callback, 1000 / 60);
+                  };
+        })();
 
-			window.onload = function() {
+      window.onload = function() {
 
         var interpolation = 'basis';  // The coolest method
 
@@ -124,13 +124,13 @@
           .attr("d", getLine()(data));
 
           // Repeat as soon as we can
-					requestAnimFrame(draw);
-				}
+          requestAnimFrame(draw);
+        }
 
-				requestAnimFrame(draw);
-			}
-		</script>
-		
+        requestAnimFrame(draw);
+      }
+    </script>
+    
   </head>
 
   <body></body>
