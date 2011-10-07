@@ -40,7 +40,7 @@
         var interpolation = 'basis';  // The coolest method
 
         var w = 20;
-        var h = 80;
+        var h = 95;
 
         var total_width = window.innerWidth / 3;
         var n = Math.floor(total_width / w);
@@ -52,8 +52,8 @@
               .domain([0, 1])
               .range([0, w]);
         var y = d3.scale.linear()
-              .domain([0, 60])
-              .rangeRound([0, h]);  // TODO --consider removing.
+              .domain([0, h])
+              .range([0, h]);  // TODO --consider removing.
 
         var chart = d3.select('body').append("svg:svg").attr("class", "chart")
         .attr("width", w * data.length - 1).attr("height", h);
@@ -85,8 +85,8 @@
         ticks.enter().append('svg:line')
         .attr('x1', 0)
         .attr('x2', 5)
-        .attr('y1', function (d) { return y(d) })
-        .attr('y2', function (d) { return y(d) })
+        .attr('y1', function (d) { return h - y(d) })
+        .attr('y2', function (d) { return h - y(d) })
         .attr("stroke", "#000");
 
         ticks.enter().append("svg:text")
