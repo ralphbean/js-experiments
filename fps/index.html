@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Canvas Example 2 Alt (FPS Count)</title>
+
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js">
+    </script>
+
+    <style type="text/css">
+      .chart rect {
+        fill: steelblue;
+        stroke: white;
+      }
+    </style>
+
+		<script>	
+
+			// Code for the window.requestAnimFrame developed by Paul Irish <paul.irish at gmail dot com>
+			// Based on this W3C spec (still a draft) http://webstuff.nfshost.com/anim-timing/Overview.html
+			// shim layer with setTimeout fallback
+		    window.requestAnimFrame = (function() {
+		      return  window.requestAnimationFrame       || 
+		              window.webkitRequestAnimationFrame || 
+		              window.mozRequestAnimationFrame    || 
+		              window.oRequestAnimationFrame      || 
+		              window.msRequestAnimationFrame     || 
+		              function(/* function */ callback, /* DOMElement */ element) {
+		              	window.setTimeout(callback, 1000 / 60);
+		              };
+		    })();
+
+			window.onload = function() {
+
+        var interpolation = 'basis';  // The coolest method
+
+        var w = 3;
+        var h = 80;
+
+        var t = 1297110663;
+        var v = 70;
+
+        var n = Math.floor(window.innerWidth / 2/ w);
+
+        function zeroes() { return { time: ++t, value: 0, } }
+        data = d3.range(n).map(zeroes);
+
+        var x = d3.scale.linear()
+              .domain([0, 1])
+              .range([0, w]);
+        var y = d3.scale.linear()
+              .domain([0, 100])
+              .rangeRound([0, h]);  // TODO --consider removing.
+        
+        var chart = d3.select('body').append("svg:svg").attr("class", "chart")
+        .attr("width", w * data.length - 1).attr("height", h);
+
+        chart.selectAll("rect").data(data)
+          .enter().append("svg:rect")
+          .attr("x", function(d, i) { return x(i); })
+          .attr("y", function(d) { return h - y(d.value); })
+          .attr("width", w)
+          .attr("height", function(d) { return y(d.value) });
+
+        // Add a y-axis line:
+        chart.append("svg:line")
+            .attr("x1", 0)
+            .attr("x2", w * data.length)
+            .attr("y1", h - 0.5)
+            .attr("y2", h - 0.5)
+            .attr("stroke", "#000")
+
+        var lastDate = new Date();
+
+        function draw() {
+          var date = new Date();
+
+          // Delta is in milliseconds
+          var delta = date - lastDate;
+
+          lastDate = date;
+
+          // Convert from ms/frame to frames/s
+          var fps = {
+              time: date,
+              value: 1.0/(delta/1000.0),
+          }
+            
+          data.push(fps);
+          data.shift();
+
+          var points = chart.selectAll("rect")
+          .data(data).transition().duration(1)
+          .attr("y", function(d) { return h - y(d.value) - 0.5; })
+          .attr("height", function(d) { return y(d.value); });
+
+					requestAnimFrame(draw);
+				}
+
+				requestAnimFrame(draw);
+			}
+		</script>
+		
+    </head>
+    <body>
+    </body>
+</html>
