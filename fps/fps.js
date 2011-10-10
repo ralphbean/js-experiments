@@ -12,7 +12,7 @@ window.requestAnimFrame = (function() {
           };
 })();
 
-window.onload = function() {
+$(document).ready(function() {
 
   var interpolation = 'basis';  // The coolest method
 
@@ -107,4 +107,4 @@ window.onload = function() {
   }
 
   requestAnimFrame(draw);
-}
+});
