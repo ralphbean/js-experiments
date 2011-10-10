@@ -32,7 +32,13 @@ $(document).ready(function() {
         .domain([0, h])
         .range([0, h]);  // TODO --consider removing.
 
-  var chart = d3.select('body').append("svg:svg").attr("class", "chart")
+  var container = d3.select('body').append('div')
+  .attr("width", w * data.length - 1).attr("height", h)
+  .attr("style", "position:absolute;top:0px;left:" +
+          (window.innerWidth - total_width) + "px"
+  );
+
+  var chart = container.append("svg:svg").attr("class", "chart")
   .attr("width", w * data.length - 1).attr("height", h);
 
   chart.selectAll("path").data(data)
