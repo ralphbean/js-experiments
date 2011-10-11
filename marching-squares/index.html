@@ -20,7 +20,7 @@
         };
 
         var balls = [];
-        var num_balls = 200;
+        var num_balls = 20;
         for ( var i = 0; i < num_balls; i++ ) {
           balls.push({
             x: Math.random() * grid.width,
@@ -35,6 +35,35 @@
         canvas.height = grid.height;
         var c = canvas.getContext('2d');
 
+        function threshold(x, y) {
+          var f = 0;
+          for ( var i = 0; i < balls.length; i++ ) {
+            d = Math.sqrt(
+              Math.pow(balls[i].x - x, 2) +
+              Math.pow(balls[i].y - y, 2)
+            );
+            g_force = 1 / Math.pow(d, 2);
+            f += g_force;
+          }
+          return f;
+        }
+
+        function draw_marching_squares() {
+          var cell_map = [];
+          var cell_size = 32;
+          for ( var i = 0; i < grid.width / cell_size; i += 1 ) {
+            cell_map[i] = [];
+            for ( var j = 0; j < grid.height / cell_size; j += 1 ) {
+              cell_map[i][j] = threshold(i*cell_size, j*cell_size);
+              if ( cell_map[i][j] > 0.00025 ) {
+                c.beginPath();
+                c.arc(i*cell_size, j*cell_size, 10, 0 , Math.PI*2, true);
+                c.closePath();
+                c.fill();
+              }
+            }
+          }
+        }
         function draw() {
           c.fillStyle = '#FFFFFF';
           c.fillRect(0, 0, canvas.width, canvas.height);
@@ -45,8 +74,13 @@
             c.closePath();
             c.fill();
           }
+
+          draw_marching_squares();
+
           requestAnimFrame(draw);
         }
+
+
         function animate() {
           var scale = 9.8;
           for ( var i = 0; i < balls.length; i++ ) {
