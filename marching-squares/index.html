@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chart of frames/second with d3.js</title>
+    <script type="text/javascript"
+      src="http://code.jquery.com/jquery-1.6.4.min.js">
+    </script>
+    <script type="text/javascript"
+      src="http://mbostock.github.com/d3/d3.js">
+    </script>
+    <script type="text/javascript"
+      src="http://threebean.org/js-experiments/fps/fps.js">
+    </script>
+    <script type="text/javascript">
+      $(document).ready(function (){
+        var balls = [];
+        var num_balls = 300;
+        for ( var i = 0; i < num_balls; i++ ) {
+          balls.push({x: Math.random() * 1, y: Math.random() * 50});
+        }
+
+        var grid = {
+          width: 250,
+          height: 250,
+        };
+
+        var canvas = document.getElementById('myCanvas');
+        canvas.width = grid.width;
+        canvas.height = grid.height;
+        var c = canvas.getContext('2d');
+
+        draw();
+
+        function draw() {
+          c.fillStyle = '#FFFFFF';
+          c.fillRect(0, 0, canvas.width, canvas.height);
+          c.fillStyle = '#000000';
+          for ( var i = 0; i < balls.length; i++ ) {
+            c.beginPath();
+            c.arc(balls[i].x, balls[i].y, 2, 0, Math.PI*2, true);
+            c.closePath();
+            c.fill();
+          }
+          requestAnimFrame(draw);
+        }
+        function animate() {
+          var scale = 9.8;
+          for ( var i = 0; i < balls.length; i++ ) {
+            var dx = 0;
+            var dy = 0;
+
+            // Update each ball based on every other ball
+            for ( var j = 0; j < balls.length; j++ ) {
+              if ( i == j ) { continue; }
+              d = Math.sqrt(
+                Math.pow(balls[i].x - balls[j].x, 2) +
+                Math.pow(balls[i].y - balls[j].y, 2)
+              );
+
+              if ( d == 0 ) { 
+                // OMG, what do we do?
+                dx += (Math.random() * 2) - 1; 
+                dy += (Math.random() * 2) - 1;
+                continue;
+              }
+
+              g_force = 1 / Math.pow(d, 2);
+              dx -= g_force * ((balls[i].x - balls[j].x)/d)
+              dy -= g_force * ((balls[i].y - balls[j].y)/d)
+              
+              n_force = 1 / Math.pow(d, 3);
+              dx -= n_force * ((balls[i].x - balls[j].x)/d)
+              dy -= n_force * ((balls[i].y - balls[j].y)/d)
+
+            }
+
+            balls[i].x += (dx * scale);
+            balls[i].y += (dy * scale);
+            if ( balls[i].x < 0 ) {
+              balls[i].x = -1 * (balls[i].x % grid.width);
+            }
+            if ( balls[i].y < 0 ) {
+              balls[i].y = -1 * (balls[i].y % grid.height);
+            }
+            if ( balls[i].x > grid.width ) {
+              balls[i].x = balls[i].x % grid.width;
+            }
+            if ( balls[i].y > grid.height ) {
+              balls[i].y = balls[i].y % grid.height;
+            }
+          }
+          requestAnimFrame(animate);
+        }
+        animate();
+      });
+    </script>
+
+  </head>
+  <body>
+    <canvas id='myCanvas'></canvas>
+  </body>
+</html>
