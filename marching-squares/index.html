@@ -14,23 +14,26 @@
     </script>
     <script type="text/javascript">
       $(document).ready(function (){
-        var balls = [];
-        var num_balls = 300;
-        for ( var i = 0; i < num_balls; i++ ) {
-          balls.push({x: Math.random() * 1, y: Math.random() * 50});
-        }
-
         var grid = {
-          width: 250,
-          height: 250,
+          width: 1420,
+          height: 750,
         };
+
+        var balls = [];
+        var num_balls = 200;
+        for ( var i = 0; i < num_balls; i++ ) {
+          balls.push({
+            x: Math.random() * grid.width,
+            y: Math.random() * grid.height,
+            vx: 0,
+            vy: 0,
+          });
+        }
 
         var canvas = document.getElementById('myCanvas');
         canvas.width = grid.width;
         canvas.height = grid.height;
         var c = canvas.getContext('2d');
-
-        draw();
 
         function draw() {
           c.fillStyle = '#FFFFFF';
@@ -68,20 +71,30 @@
               g_force = 1 / Math.pow(d, 2);
               dx -= g_force * ((balls[i].x - balls[j].x)/d)
               dy -= g_force * ((balls[i].y - balls[j].y)/d)
-              
-              n_force = 1 / Math.pow(d, 3);
-              dx -= n_force * ((balls[i].x - balls[j].x)/d)
-              dy -= n_force * ((balls[i].y - balls[j].y)/d)
-
             }
 
-            balls[i].x += (dx * scale);
-            balls[i].y += (dy * scale);
+            balls[i].vx += (dx * scale);
+            balls[i].vy += (dy * scale);
+          }
+
+          var LIMIT = 50;
+          for ( var i = 0; i < balls.length; i++ ) {
+            if ( balls[i].vx > LIMIT ) { balls[i].vx = LIMIT / 100.0; }
+            if ( balls[i].vy > LIMIT ) { balls[i].vy = LIMIT / 100.0; }
+
+            balls[i].vx = 99 * balls[i].vx / 100.0;
+            balls[i].vy = 99 * balls[i].vy / 100.0;
+          }
+
+          for ( var i = 0; i < balls.length; i++ ) {
+            balls[i].x += balls[i].vx;
+            balls[i].y += balls[i].vy;
+
             if ( balls[i].x < 0 ) {
-              balls[i].x = -1 * (balls[i].x % grid.width);
+              balls[i].x += grid.width;
             }
             if ( balls[i].y < 0 ) {
-              balls[i].y = -1 * (balls[i].y % grid.height);
+              balls[i].y += grid.height;
             }
             if ( balls[i].x > grid.width ) {
               balls[i].x = balls[i].x % grid.width;
@@ -92,7 +105,10 @@
           }
           requestAnimFrame(animate);
         }
+
         animate();
+        draw();
+
       });
     </script>
 
