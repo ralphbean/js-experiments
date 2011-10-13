@@ -10,6 +10,9 @@
       src="http://mbostock.github.com/d3/d3.js">
     </script>
     <script type="text/javascript"
+      src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js">
+    </script>
+    <script type="text/javascript"
       src="http://threebean.org/js-experiments/fps/fps.js">
     </script>
     <script type="text/javascript">
@@ -34,6 +37,24 @@
         canvas.width = grid.width;
         canvas.height = grid.height;
         var c = canvas.getContext('2d');
+        var mousePos = null;
+        var mouse_weight = 10;
+
+        if ( Modernizr.touch ) {
+          console.log("touch");
+        } else {
+          $('canvas').bind('mousedown', function(ev) {
+            mousePos = { x: ev.clientX, y: ev.clientY, };
+          });
+          $('canvas').bind('mousemove', function(ev) {
+            if ( mousePos ) {
+              mousePos = { x: ev.clientX, y: ev.clientY, };
+            }
+          });
+          $('canvas').bind('mouseup', function(ev) {
+            mousePos = null;
+          });
+        }
 
         function threshold(x, y) {
           var f = 0;
@@ -48,16 +69,16 @@
           return f;
         }
 
+        var cell_size = 12;
         function draw_marching_squares() {
           var cell_map = [];
-          var cell_size = 32;
           for ( var i = 0; i < grid.width / cell_size; i += 1 ) {
             cell_map[i] = [];
             for ( var j = 0; j < grid.height / cell_size; j += 1 ) {
               cell_map[i][j] = threshold(i*cell_size, j*cell_size);
               if ( cell_map[i][j] > 0.00025 ) {
                 c.beginPath();
-                c.arc(i*cell_size, j*cell_size, 10, 0 , Math.PI*2, true);
+                c.arc(i*cell_size, j*cell_size, cell_size/3, 0 , Math.PI*2, true);
                 c.closePath();
                 c.fill();
               }
@@ -75,7 +96,7 @@
             c.fill();
           }
 
-          draw_marching_squares();
+          //draw_marching_squares();
 
           requestAnimFrame(draw);
         }
@@ -105,6 +126,26 @@
               g_force = 1 / Math.pow(d, 2);
               dx -= g_force * ((balls[i].x - balls[j].x)/d)
               dy -= g_force * ((balls[i].y - balls[j].y)/d)
+            }
+
+            if ( mousePos != null ) {
+              d = Math.sqrt(
+                Math.pow(balls[i].x - mousePos.x, 2) +
+                Math.pow(balls[i].y - mousePos.y, 2)
+              );
+              if ( d == 0 ) { 
+                // OMG, what do we do?
+                dx += (Math.random() * 2) - 1; 
+                dy += (Math.random() * 2) - 1;
+                continue;
+              }
+
+              g_force = mouse_weight * (
+                1 / Math.pow(d, 1) -
+                cell_size*10 / Math.pow(d, 2)
+              );
+              dx -= g_force * ((balls[i].x - mousePos.x)/d)
+              dy -= g_force * ((balls[i].y - mousePos.y)/d)
             }
 
             balls[i].vx += (dx * scale);
