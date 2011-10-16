@@ -232,7 +232,23 @@
             }
           }
         }
+        var lastDate = new Date();
         function draw() {
+
+          // Performance scaling
+          var date = new Date();
+          dt = date - lastDate;
+          lastDate = date;
+          fps = 1 / (dt / 1000.0);
+          var target_fps = 32.0;
+          if ( fps > 100 ) {
+            fps = target_fps;
+          }
+          var target_cellsize = 8;
+          d_cell_size = 1 - (fps/target_fps);
+          cell_size += 0.1 * d_cell_size;
+          // Done with performance scaling
+
           c.fillStyle = '#FFFFFF';
           c.fillRect(0, 0, canvas.width, canvas.height);
           c.fillStyle = '#000000';
