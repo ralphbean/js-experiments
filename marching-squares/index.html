@@ -233,13 +233,14 @@
           }
         }
         var lastDate = new Date();
+        var dt = 100;
         function draw() {
 
           // Performance scaling
           var date = new Date();
           dt = date - lastDate;
           lastDate = date;
-          fps = 1 / (dt / 1000.0);
+          var fps = 1 / (dt / 1000.0);
           var target_fps = 32.0;
           if ( fps > 100 ) {
             fps = target_fps;
@@ -265,7 +266,7 @@
 
 
         function animate() {
-          var scale = 9.8;
+          var scale = 9.8 * (dt / 33.0);
           for ( var i = 0; i < balls.length; i++ ) {
             var dx = 0;
             var dy = 0;
@@ -330,22 +331,18 @@
             if ( balls[i].x < 0 ) {
               balls[i].x = 1;
               balls[i].vx = 0;
-              //balls[i].x += grid.width;
             }
             if ( balls[i].y < 0 ) {
               balls[i].y = 1;
               balls[i].vy = 0;
-              //balls[i].y += grid.height;
             }
             if ( balls[i].x > grid.width ) {
               balls[i].x = grid.width - 1;
               balls[i].vx = 0;
-              //balls[i].x = balls[i].x % grid.width;
             }
             if ( balls[i].y > grid.height ) {
               balls[i].y = grid.height - 1;
               balls[i].vy = 0;
-              //balls[i].y = balls[i].y % grid.height;
             }
           }
           requestAnimFrame(animate);
