@@ -240,13 +240,13 @@
           dt = date - lastDate;
           lastDate = date;
           var fps = 1 / (dt / 1000.0);
-          var target_fps = 32.0;
+          var target_fps = 19.0;
           if ( fps > 100 ) {
             fps = target_fps;
           }
           var target_cellsize = 8;
           d_cell_size = 1 - (fps/target_fps);
-          cell_size += 0.1 * d_cell_size;
+          cell_size += 0.25 * d_cell_size;
           // Done with performance scaling
 
           c.fillStyle = '#FFFFFF';
