@@ -200,22 +200,21 @@
         }
 
         function draw_marching_squares() {
+          c.beginPath();
           for ( var i = 0; i < grid.width / cell_size; i += 1 ) {
             for ( var j = 0; j < grid.height / cell_size; j += 1 ) {
               cell = get_grid_cell(i*cell_size, j*cell_size, isolevel);
               if ( cell ) {
                 segments = polygonize(cell, isolevel);
                 for ( var k = 0; k < segments.length; k++ ) {
-                  c.beginPath();
                   c.moveTo(segments[k].a.x, segments[k].a.y);
                   c.lineTo(segments[k].b.x, segments[k].b.y);
-                  c.closePath();
-                  //c.strokeStyle('black');
-                  c.stroke();
                 }
               }
             }
           }
+          c.closePath();
+          c.stroke();
         }
         function draw_marching_squares_old() {
           var cell_map = [];
